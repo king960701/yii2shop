@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "article_category".
@@ -49,4 +50,5 @@ class ArticleCategory extends \yii\db\ActiveRecord
             'is_deleted' => '状态',
         ];
     }
+
 }
