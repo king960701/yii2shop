@@ -86,4 +86,19 @@ class ArticleController extends \yii\web\Controller
         $detail=ArticleDetail::findOne(['article_id'=>$id]);
         return $this->render('detail',['detail'=>$detail,'model'=>$model]);
     }
+
+    public function actions()
+    {
+        $time=time().uniqid();
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+                'config' => [
+                    "imageUrlPrefix"  => "http://admin.yii2shop.cn",//图片访问路径前缀
+                    "imagePathFormat" => "/upload/image/{$time}",//上传保存路径
+                "imageRoot" => \Yii::getAlias("@webroot")
+            ]
+        ]
+    ];
+}
 }

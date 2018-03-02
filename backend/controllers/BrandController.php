@@ -99,7 +99,7 @@ class BrandController extends \yii\web\Controller
         //实例化上传文件
         $uploadedFile=UploadedFile::getInstanceByName('file');
         //保存 文件
-        $fileName='/upload/'.'.'.$uploadedFile->extension;
+        $fileName='/upload/'.uniqid().'.'.$uploadedFile->extension;
         $result=$uploadedFile->saveAs(\Yii::getAlias('@webroot').$fileName);
         if($result){//如果保存成功 返回json对象
             //将图片上传到七牛云

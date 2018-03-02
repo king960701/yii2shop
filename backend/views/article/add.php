@@ -4,7 +4,9 @@ $form = \yii\bootstrap\ActiveForm::begin();
 echo $form->field($model,'name')->textInput();
 echo $form->field($model,'intro')->textarea();
 echo $form->field($model,'article_category_id')->dropDownList(\backend\models\Article::getCategory());
-echo $form->field($detail,'content')->textarea();
+//echo $form->field($detail,'content')->textarea();
+echo $form->field($detail,'content')->widget('kucha\ueditor\UEditor',[]);
+//echo \kucha\ueditor\UEditor::widget(['name' => 'content']);
 echo $form->field($model,'sort')->textInput();
 if($model->getIsNewRecord()){
     echo '<button type="submit" class="btn btn-info">添加</button>';
