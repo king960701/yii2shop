@@ -51,9 +51,16 @@ class GoodsCategoryController extends \yii\web\Controller
     }
     public function actionDelete($id){
         $model=GoodsCategory::findOne(['id'=>$id]);
-        $model->deleteWithChildren();
-        \Yii::$app->session->setFlash('success','分类删除成功!');
-        return $this->redirect(['goods-category/index']);
+        //var_dump(GoodsCategory::find()->where(['parent_id'=>$id])->all());die;
+        if(GoodsCategory::find()->where(['parent_id'=>$id])->all()==[]){
+            $model->deleteWithChildren();
+            \Yii::$app->session->setFlash('success','分类删除成功!');
+            return $this->redirect(['goods-category/index']);
+        }else{
+            \Yii::$app->session->setFlash('warning','下面还有子分类不能删除!');
+            return $this->redirect(['goods-category/index']);
+        }
+
     }
     public function actionEdit($id){
         $request=\Yii::$app->request;
@@ -66,10 +73,15 @@ class GoodsCategoryController extends \yii\web\Controller
                     $parent=GoodsCategory::findOne(['id'=>$model->parent_id]);
                     $model->prependTo($parent);
                 }else{
-                    //根节点
-                    $model->makeRoot();
+                    if($model->getOldAttribute('parent_id')==0){
+                        $model->save();
+                    }else{
+                        //根节点
+                        $model->makeRoot();
+                    }
+
                 }
-                \Yii::$app->session->setFlash('success','分类添加成功!');
+                \Yii::$app->session->setFlash('success','分类修改成功!');
                 return $this->redirect(['goods-category/index']);
             }else{
                 var_dump($model->getErrors());

@@ -14,10 +14,10 @@
             <td><?=$brand->intro?></td>
             <td><img src="<?=$brand->logo?>" alt="" width="100px"></td>
             <td><?=$brand->sort?></td>
-            <td><?=\yii\helpers\Html::a('删除',['brand/delete','id'=>$brand->id],['class'=>'btn btn-danger']);?>
-                <?=\yii\helpers\Html::a('修改',['brand/edit','id'=>$brand->id],['class'=>'btn btn-info']);?>
+            <td><?=\yii\helpers\Html::a('删除',['brand/delete','id'=>$brand->id],['class'=>'btn btn-danger glyphicon glyphicon-trash','style'=>"font-size: 12px;"]);?>
+                <?=\yii\helpers\Html::a('修改',['brand/edit','id'=>$brand->id],['class'=>'btn btn-info glyphicon glyphicon-pencil','style'=>"font-size: 12px;"]);?>
             </td>
         </tr>
     <?php endforeach;?>
 </table>
-<?=\yii\helpers\Html::a('添加',['brand/add'],['class'=>'btn btn-primary']);?>
+<?=\yii\helpers\Html::a('添加',['brand/add'],['class'=>'btn btn-primary glyphicon glyphicon-plus-sign','style'=>"font-size: 12px;"]);?>
