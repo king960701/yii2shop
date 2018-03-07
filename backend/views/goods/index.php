@@ -3,9 +3,12 @@
 </h1>
 <?php
 $form =\yii\bootstrap\ActiveForm::begin(['layout'=>'inline','method'=>'get']);
-echo$form->field($model,'name')->textInput(['placeholder'=>'关键字'])->label(false);
-echo$form->field($model,'sn')->textInput(['placeholder'=>'货号'])->label(false);
+echo $form->field($model,'name')->textInput(['placeholder'=>'关键字'])->label(false);
+echo $form->field($model,'sn')->textInput(['placeholder'=>'货号'])->label(false);
+echo $form->field($model,'min')->textInput(['placeholder'=>'¥'])->label(false);
+echo $form->field($model,'max')->textInput(['placeholder'=>'¥'])->label(false);
 echo '<button type="submit" class="btn btn-default glyphicon glyphicon-search"  style="font-size: 12px;">搜索</button>';
+echo '<a href="index" class="btn btn-default glyphicon glyphicon-refresh"  style="font-size: 12px;">重置</a>';
 \yii\bootstrap\ActiveForm::end();
 ?>
 <table class="table table-bordered" style="text-align: center">
@@ -25,7 +28,7 @@ echo '<button type="submit" class="btn btn-default glyphicon glyphicon-search"  
         <th style="text-align: center">操作</th>
     </tr>
     <?php foreach($goods as $good):?>
-        <tr>
+        <tr data-id="<?=$good->id?>">
             <td><?=$good->id?></td>
             <td><?=$good->name?></td>
             <td><?=$good->sn?></td>
@@ -40,7 +43,7 @@ echo '<button type="submit" class="btn btn-default glyphicon glyphicon-search"  
             <td><?=$good->view_times?></td>
             <td>
                 <?=\yii\helpers\Html::a('照片',['goods/photo','id'=>$good->id],['class'=>'btn btn-primary glyphicon glyphicon-picture','style'=>"font-size: 12px;"]);?>
-                <?=\yii\helpers\Html::a('删除',['goods/delete','id'=>$good->id],['class'=>'btn btn-danger glyphicon glyphicon-trash','style'=>"font-size: 12px;"]);?>
+                <a href="javascript:;" style="font-size: 12px;" class="btn btn-danger glyphicon glyphicon-trash">删除</a>
                 <?=\yii\helpers\Html::a('修改',['goods/edit','id'=>$good->id],['class'=>'btn btn-info glyphicon glyphicon-pencil','style'=>"font-size: 12px;"]);?>
                 <?=\yii\helpers\Html::a('查看',['goods/see','id'=>$good->id],['class'=>'btn btn-warning glyphicon glyphicon-eye-open','style'=>"font-size: 12px;"]);?>
             </td>
@@ -62,3 +65,28 @@ echo \yii\widgets\LinkPager::widget([
     'firstPageLabel'=>'第一页',
     'lastPageLabel'=>'最后页'
 ]);
+$del=\yii\helpers\Url::to(['goods/delete']);
+$this->registerJs(
+        <<<JS
+$('.table').on('click','.btn-danger',function(){
+    var tr=$(this).closest('tr');
+            var id=tr.attr('data-id');
+            //删除二次确认
+    layer.confirm('确认删除？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.get('{$del}',{id:id},function(data){
+                if(data=='success'){
+                tr.remove();
+            }else {
+                    layer.msg(data.msg);
+                }
+            });
+            layer.msg('删除成功!', {icon: 1});
+        }, function(){
+            layer.msg('成功取消!', {
+            });
+        });
+})
+JS
+);

@@ -44,9 +44,17 @@ class ArticleController extends \yii\web\Controller
      * 删除
      */
     public function actionDelete($id){
-        \Yii::$app->db->createCommand("update `article` set `is_deleted`=1 where `id`={$id}")->execute();
-        \Yii::$app->session->setFlash('success','删除成功');
-        return $this->redirect(['article/index']);
+//        \Yii::$app->db->createCommand("update `article` set `is_deleted`=1 where `id`={$id}")->execute();
+//        \Yii::$app->session->setFlash('success','删除成功');
+//        return $this->redirect(['article/index']);
+        $model = Article::findOne(['id' => $id]);
+        if($model){
+            $model->is_deleted = 1;
+            if(!$model->save()){
+                return 'fail';
+            }
+        }
+        return 'success';
     }
     /**
      * 回显更新

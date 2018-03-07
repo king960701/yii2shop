@@ -17,12 +17,24 @@ class GoodsController extends \yii\web\Controller
 {
     public function actionIndex()
     {
+        $query=Goods::find()->where(['status'=>1]);
         $request=\Yii::$app->request;
-        if($request->isGet){
-            $name=$request->get('SearchForm')['name']??'';
-            $sn=$request->get('SearchForm')['sn']??'';
+        $name=$request->get('SearchForm')['name'];//isset($_GET['name'])?$_GET['name']:null
+        if($name){
+            $query->andWhere(['like','name',$name]);
         }
-        $query=Goods::find()->where(['status'=>1])->andWhere(['and',['like','name',$name],['like','sn',$sn]]);
+        $sn=$request->get('SearchForm')['sn'];
+        if($sn){
+            $query->andWhere(['like','sn',$sn]);
+        }
+        $min=$request->get('SearchForm')['min'];
+        if($min){
+            $query->andWhere(['>=','shop_price',$min]);
+        }
+        $max=$request->get('SearchForm')['max'];
+        if($max){
+            $query->andWhere(['<=','shop_price',$max]);
+        }
         //分页工具类
         $pager=new Pagination();
         //总条数
@@ -33,6 +45,8 @@ class GoodsController extends \yii\web\Controller
         $model=new SearchForm();
         $model->name=$name;
         $model->sn=$sn;
+        $model->max=$max;
+        $model->min=$min;
         return $this->render('index',['goods'=>$goods,'pager'=>$pager,'model'=>$model]);
     }
     public function actionAdd(){
@@ -104,9 +118,17 @@ class GoodsController extends \yii\web\Controller
         ];
     }
     public function actionDelete($id){
-        \Yii::$app->db->createCommand("update `goods` set `status`=0 where `id`={$id}")->execute();
-        \Yii::$app->session->setFlash('success','删除成功,已添加到回收站!');
-        return $this->redirect(['goods/index']);
+        $model = Goods::findOne(['id' => $id]);
+        if($model){
+            $model->status = 0;
+            if(!$model->save()){
+                return 'fail';
+            }
+        }
+        return 'success';
+//        \Yii::$app->db->createCommand("update `goods` set `status`=0 where `id`={$id}")->execute();
+//        \Yii::$app->session->setFlash('success','删除成功,已添加到回收站!');
+//        return $this->redirect(['goods/index']);
     }
     public function actionEdit($id){
         $request=\Yii::$app->request;

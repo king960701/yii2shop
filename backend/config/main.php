@@ -19,6 +19,7 @@ return [
         ],
         'user' => [
             'identityClass' => 'backend\models\Admin',
+            //必须打开才能自动登录
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],

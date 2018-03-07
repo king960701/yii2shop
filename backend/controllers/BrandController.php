@@ -58,9 +58,14 @@ class BrandController extends \yii\web\Controller
      * 删除
      */
     public function actionDelete($id){
-        \Yii::$app->db->createCommand("update `brand` set `is_deleted`=1 where `id`={$id}")->execute();
-        \Yii::$app->session->setFlash('success','删除成功');
-        return $this->redirect(['brand/index']);
+        $model=Brand::findOne(['id'=>$id]);
+        if($model){
+            $model->is_deleted=1;
+            if(!$model->save()){
+                return 'fail';
+            }
+        }
+        return 'success';
     }
     /**
      * 回显更新

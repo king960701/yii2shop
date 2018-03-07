@@ -35,21 +35,34 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => '主页', 'url' => ['/site/index']],
-        ['label' => '安全', 'url' => ['/admin/edit','id'=>\yii\helpers\Url::to(\Yii::$app->user->id)]],
+    $menuItems[] = [
+        'label' => '品牌管理' ,'url' => ['/brand/index']
+    ];
+    $menuItems[] = [
+        'label' => '文章管理' ,'url' => ['/article/index']
+    ];
+    $menuItems[] = [
+        'label' => '商品管理' ,'url' => ['/goods/index']
+    ];
+    $menuItems[] = [
+        'label' => 'RBAC','url' => ['/rbac/index']
+    ];
+    $menuItems[] = [
+        'label' => '用户管理' ,'url' => ['/admin/index']
+    ];
+    $menuItems[] = [
+        'label' => '菜单管理' ,'url' => ['/menu/index']
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '登录', 'url' => ['/admin/login']];
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/admin/logout'], 'post')
-            . Html::submitButton(
-                '注销 (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
+        $menuItems[] = [
+            'label' => '用户 ' . Yii::$app->user->identity->username . '',
+            'items' => [
+                ['label' => '修改密码', 'url' => ['/admin/edit']],
+                ['label'=> '退出登录','url' => ['admin/logout']],
+            ],
+        ];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

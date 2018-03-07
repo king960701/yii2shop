@@ -29,6 +29,7 @@ class LoginForm extends Model
         return [
             [['username','password_hash','code'],'required'],
             ['code','captcha','captchaAction'=>'admin/captcha'],
+            ['rememberMe','safe'],
         ];
     }
     //登录方法
@@ -41,8 +42,9 @@ class LoginForm extends Model
                 $admin->last_login_time=time();
                 $admin->last_login_ip=ip2long(\Yii::$app->request->userIP);
                 $admin->save();
+                $duration=$this->rememberMe?3600*24*7:0;
                 //密码正确 保存session
-                return \Yii::$app->user->login($admin);
+                return \Yii::$app->user->login($admin,$duration);
             }else{
                 //密码错误 设置错误信息
                 $this->addError('password_hash','密码错误');

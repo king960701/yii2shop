@@ -22,6 +22,8 @@ use yii\web\IdentityInterface;
  */
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_ADD='add';
+    const SCENARIO_EDIT='edit';
     /**
      * @inheritdoc
      */
@@ -44,6 +46,11 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
+            //添加时 必须填密码
+            //修改时 可以不填
+            //场景(添加,修改)
+            ['password','required','on'=>[self::SCENARIO_ADD]],//配置场景,只在添加场景生效
+            ['password','safe','on'=>[self::SCENARIO_EDIT]],//配置场景,只在修改场景生效
         ];
     }
 
@@ -77,6 +84,17 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public static function findIdentity($id)
     {
         return self::findOne(['id'=>$id]);
+    }
+    public function beforeSave($insert){
+        if($insert){
+            $this->created_at=time();
+            $this->password_hash=\Yii::$app->security->generatePasswordHash($this->password_hash);
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+        }else{
+            $this->updated_at=time();
+        }
+
+        return parent::beforeSave($insert);
     }
 
     /**
@@ -129,7 +147,6 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->getAuthKey() === $authKey;
+        return $this->auth_key === $authKey;
     }
-
 }
