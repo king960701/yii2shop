@@ -45,7 +45,11 @@ AppAsset::register($this);
         'label' => '商品管理' ,'url' => ['/goods/index']
     ];
     $menuItems[] = [
-        'label' => 'RBAC','url' => ['/rbac/index']
+        'label' => 'RBAC','url' => ['#'],
+        'items' => [
+            ['label' => '权限列表', 'url' => ['/rbac/permission-index']],
+            ['label'=> '角色列表','url' => ['/rbac/role-index']],
+        ],
     ];
     $menuItems[] = [
         'label' => '用户管理' ,'url' => ['/admin/index']

@@ -79,7 +79,7 @@ class AdminController extends \yii\web\Controller
     public function behaviors()
     {
         return [
-            'acf'=>[
+            'rbac'=>[
                 'class'=>AccessControl::className(),
                 'only'=>['index'],
                 'rules'=>[
@@ -146,5 +146,33 @@ class AdminController extends \yii\web\Controller
             }
         }
         return $this->render('add',['model'=>$model]);
+    }
+    public function actionTest(){
+        $authManager=\Yii::$app->authManager;
+        /*//创建权限  使用路由的形式
+        $permission=$authManager->createPermission('brand/add');
+        $permission->description='添加品牌';
+        //保存到数据表
+        $authManager->add($permission);*/
+        /*$permission=$authManager->createPermission('brand/index');
+        $permission->description='品牌列表';
+        $authManager->add($permission);*/
+        /*$role=$authManager->createRole('超级管理员');
+        $authManager->add($role);
+        $role2=$authManager->createRole('普通员工');
+        $authManager->add($role2);*/
+        /*//给角色关联权限
+        $role=$authManager->getRole('超级管理员');
+        $permission=$authManager->getPermission('brand/add');
+        $authManager->addChild($role,$permission);*/
+        $role=$authManager->getRole('普通员工');
+        $permission=$authManager->getPermission('brand/index');
+        $authManager->addChild($role,$permission);
+        //给用户指派角色
+        /*$role=$authManager->getRole('超级管理员');
+        $role2=$authManager->getRole('普通员工');
+        $authManager->assign($role,8);
+        $authManager->assign($role2,9);*/
+        echo '执行成功!';
     }
 }

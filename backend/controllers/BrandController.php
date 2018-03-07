@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Brand;
 use yii\web\UploadedFile;
 // 引入鉴权类
@@ -160,5 +161,13 @@ class BrandController extends \yii\web\Controller
         var_dump($ret);
         }
 
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::class,
+                ]
+            ];
     }
 }
