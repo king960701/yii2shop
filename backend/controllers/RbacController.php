@@ -130,6 +130,7 @@ class RbacController extends  Controller
             $arr[]=$permission->name;
         }*/
         // 获取这个角色所有的权限 回显
+        //var_dump(\Yii::$app->authManager->getPermissionsByRole($role->name));die;
         $model->permission= array_keys($authManager->getPermissionsByRole($name));
 
         if ($request->isPost){
