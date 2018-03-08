@@ -5,30 +5,30 @@ $this->registerJsFile('@web/DataTables-1.10.15/media/js/jquery.dataTables.js',[
     'depends'=>\yii\web\JqueryAsset::className()
 ]);
 ?>
-<table id="example" class="display" style="text-align: center">
-    <thead>
-    <tr>
-        <th style="text-align: center">名称</th>
-        <th style="text-align: center">描述</th>
-        <th style="text-align: center">操作</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach($permissions as $permission):?>
-    <tr data-name="<?=$permission->name?>">
-        <td><?=$permission->name?></td>
-        <td><?=$permission->description?></td>
-        <td>
-            <a href="javascript:;" style="font-size: 12px;" class="btn btn-danger glyphicon glyphicon-trash">删除</a>
-            <?=\yii\helpers\Html::a('修改',['rbac/edit-permission','name'=>$permission->name],['class'=>'btn btn-info glyphicon glyphicon-pencil','style'=>"font-size: 12px;"]);?>
-        </td>
-    </tr>
-    <?php endforeach;?>
-    </tbody>
-</table>
-<?=\yii\helpers\Html::a('添加',['rbac/add-permission'],['class'=>'btn btn-primary glyphicon glyphicon-plus-sign','style'=>"font-size: 12px;"]);?>
+    <table id="example" class="display">
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>路由</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach($menus as $menu):?>
+            <tr data-id="<?=$menu->id?>">
+                <td><?=$menu->parent_id?'┉┉':''?><?=$menu->name?></td>
+                <td><?=$menu->url?></td>
+                <td>
+                    <a href="javascript:;" style="font-size: 12px;" class="btn btn-danger glyphicon glyphicon-trash">删除</a>
+                    <?=\yii\helpers\Html::a('修改',['menu/edit','id'=>$menu->id],['class'=>'btn btn-info glyphicon glyphicon-pencil','style'=>"font-size: 12px;"]);?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+<?=\yii\helpers\Html::a('添加',['menu/add'],['class'=>'btn btn-primary glyphicon glyphicon-plus-sign','style'=>"font-size: 12px;"]);?>
 <?php
-$del=\yii\helpers\Url::to(['rbac/delete-permission']);
+$del=\yii\helpers\Url::to(['menu/delete']);
 $this->registerJs(
     <<<JS
 $('#example').DataTable({
@@ -59,12 +59,12 @@ $('#example').DataTable({
 });
 $('.display').on('click','.btn-danger',function(){
     var tr=$(this).closest('tr');
-            var name=tr.attr('data-name');
+            var id=tr.attr('data-id');
             //删除二次确认
     layer.confirm('确认删除？', {
             btn: ['确认','取消'] //按钮
         }, function(){
-            $.get('{$del}',{name:name},function(data){
+            $.get('{$del}',{id:id},function(data){
                 if(data=='success'){
                 tr.remove();
             }else {

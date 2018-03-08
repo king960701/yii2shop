@@ -22,6 +22,7 @@ use yii\web\IdentityInterface;
  */
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    public $role;
     const SCENARIO_ADD='add';
     const SCENARIO_EDIT='edit';
     /**
@@ -49,8 +50,9 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             //添加时 必须填密码
             //修改时 可以不填
             //场景(添加,修改)
-            ['password','required','on'=>[self::SCENARIO_ADD]],//配置场景,只在添加场景生效
-            ['password','safe','on'=>[self::SCENARIO_EDIT]],//配置场景,只在修改场景生效
+            ['password_hash','required','on'=>[self::SCENARIO_ADD]],//配置场景,只在添加场景生效
+            ['password_hash','safe','on'=>[self::SCENARIO_EDIT]],//配置场景,只在修改场景生效
+            ['role','safe'],
         ];
     }
 
@@ -71,6 +73,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'updated_at' => '修改时间',
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录ip',
+            'role'=>'角色选择',
         ];
     }
 
@@ -148,5 +151,40 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->auth_key === $authKey;
+    }
+    public static function getRoles(){
+        $authManager=\Yii::$app->authManager;
+        $roles=$authManager->getRoles();
+        $arr=[];
+        foreach ($roles as $role){
+            $arr[$role->name]=$role->name;
+        }
+        return $arr;
+    }
+    public function saveRole(){
+        $authManager=\Yii::$app->authManager;
+        $roles=$this->role;
+//        var_dump($roles);die;
+        if(is_array($roles)){
+            foreach ($roles as $k=>$v) {
+                $authManager->assign($authManager->getRole($v),$this->id);
+            }
+            return true;
+        }
+        return false;
+    }
+    public function editRole(){
+        $authManager=\Yii::$app->authManager;
+        //先删除原来所有关联的角色
+        $id=\Yii::$app->request->get('id');
+        $authManager->revokeAll($id);
+        $roles=$this->role;
+        if(is_array($roles)){
+            foreach ($roles as $k=>$v) {
+                $authManager->assign($authManager->getRole($v),$this->id);
+            }
+            return true;
+        }
+        return false;
     }
 }

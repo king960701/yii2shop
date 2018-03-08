@@ -31,11 +31,7 @@ $this->registerJsFile('@web/DataTables-1.10.15/media/js/jquery.dataTables.js',[
 $del=\yii\helpers\Url::to(['rbac/delete-role']);
 $this->registerJs(
     <<<JS
-    $(document).ready( function () {
-    $('#table_id_example').DataTable();
-} );
-
-$('#example').DataTable({
+    $('#example').DataTable({
     language: {
         "sProcessing": "处理中...",
         "sLengthMenu": "显示 _MENU_ 项结果",

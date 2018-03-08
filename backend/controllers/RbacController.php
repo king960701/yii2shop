@@ -86,7 +86,7 @@ class RbacController extends  Controller
         return 'success';
     }
     /**
-     * 权限列表
+     * 角色列表
      */
     public function actionRoleIndex(){
         $authManager=\Yii::$app->authManager;
@@ -131,7 +131,10 @@ class RbacController extends  Controller
         }*/
         // 获取这个角色所有的权限 回显
         //var_dump(\Yii::$app->authManager->getPermissionsByRole($role->name));die;
-        $model->permission= array_keys($authManager->getPermissionsByRole($name));
+        if(is_array($authManager->getPermissionsByRole($name))){
+            $model->permission= array_keys($authManager->getPermissionsByRole($name));
+        }
+
 
         if ($request->isPost){
             $model->load($request->post());

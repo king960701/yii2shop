@@ -35,8 +35,9 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
     $menuItems[] = [
-        'label' => '品牌管理' ,'url' => ['/brand/index']
+        'label' => '首页' ,'url' => ['/goods/index']
     ];
     $menuItems[] = [
         'label' => '文章管理' ,'url' => ['/article/index']
@@ -60,6 +61,7 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '登录', 'url' => ['/admin/login']];
     } else {
+        //$menuItems=\backend\models\Menu::getAllMenus($menuItems);
         $menuItems[] = [
             'label' => '用户 ' . Yii::$app->user->identity->username . '',
             'items' => [

@@ -22,9 +22,10 @@ class RoleForm extends Model
     public function rules()
     {
         return [
-            [['name','description','permission'],'required'],
+            [['name','description'],'required'],
             ['name','validateName','on'=>self::SCENARIO_ADD],
             ['name','changName','on'=>self::SCENARIO_EDIT],
+            ['permission','safe'],
         ];
     }
 
@@ -62,12 +63,14 @@ class RoleForm extends Model
         $result=$authManager->add($role);
         if($result){
           //成功添加
-            foreach ($permission as $value){
-                //遍历保存
-                $chilid=$authManager->getPermission($value);
-                $authManager->addChild($role,$chilid);
+            if(is_array($permission)){
+                foreach ($permission as $value){
+                    //遍历保存
+                    $chilid=$authManager->getPermission($value);
+                    $authManager->addChild($role,$chilid);
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }

@@ -30,7 +30,7 @@ class PermissionForm extends Model
     public function attributeLabels()
     {
         return [
-            'name'=>'权限名',
+            'name'=>'权限名(路由)',
             'description'=>'权限描述',
         ];
     }

@@ -25,10 +25,11 @@ class AdminController extends \yii\web\Controller
         if($request->isPost){
             $model->load($request->post());
             if($model->validate()){
-
                 $model->save();
-                \Yii::$app->session->setFlash('success','添加成功');
-                return $this->redirect(['admin/index']);
+                if ($model->saveRole()){
+                    \Yii::$app->session->setFlash('success','添加成功');
+                    return $this->redirect(['admin/index']);
+                }
             }else{
                 //提示错误信息
                 var_dump($model->getErrors());
@@ -76,23 +77,17 @@ class AdminController extends \yii\web\Controller
     }
 
     //配置过滤器
-    public function behaviors()
+    /*public function behaviors()
     {
         return [
             'rbac'=>[
                 'class'=>AccessControl::className(),
-                'only'=>['index'],
-                'rules'=>[
-                    [//允许登录用户访问index
-                        'allow'=>true,//是否允许
-                        'actions'=>['index'],//针对哪些操作
-                        'roles'=>['@'],//?未认证 @已认证
-
-                    ],
-                ]
+                //默认情况下对所有操作生效
+                //排除不需要授权的操作
+                'except'=>['login','logout','captcha','re-password','index'],
             ]
         ];
-    }
+    }*/
     //注销
     public function actionLogout(){
         \Yii::$app->user->logout();
@@ -128,19 +123,27 @@ class AdminController extends \yii\web\Controller
     public function actionUpdate($id){
         $model=Admin::findOne(['id'=>$id]);
         $request=\Yii::$app->request;
+        $authManager=\Yii::$app->authManager;
         //坑:这里指定的场景,验证规则中必须存在该场景
         $model->scenario=Admin::SCENARIO_EDIT;
         //检查用户是否存在
         if(!$model){
             throw new HttpException(404,'该用户不存在或已被删除');
         }
+        //var_dump($authManager->getAssignments($id));die;
+        if(is_array($authManager->getAssignments($id))){
+            $model->role=array_keys($authManager->getAssignments($id));
+        }
         if($request->isPost){
             $model->load($request->post());
             if($model->validate()){
                 $model->save();
-                \Yii::$app->session->setFlash('success','修改成功!');
-                //跳转到当前页面
-                return $this->refresh();
+                if($model->editRole()){
+                    \Yii::$app->session->setFlash('success','修改成功!');
+                    //跳转到当前页面
+                    //return $this->refresh();
+                    return $this->redirect(['admin/index']);
+                }
             }else{
                 var_dump($model->getErrors());die;
             }
@@ -148,7 +151,7 @@ class AdminController extends \yii\web\Controller
         return $this->render('add',['model'=>$model]);
     }
     public function actionTest(){
-        $authManager=\Yii::$app->authManager;
+        //$authManager=\Yii::$app->authManager;
         /*//创建权限  使用路由的形式
         $permission=$authManager->createPermission('brand/add');
         $permission->description='添加品牌';
@@ -165,14 +168,14 @@ class AdminController extends \yii\web\Controller
         $role=$authManager->getRole('超级管理员');
         $permission=$authManager->getPermission('brand/add');
         $authManager->addChild($role,$permission);*/
-        $role=$authManager->getRole('普通员工');
+        /*$role=$authManager->getRole('普通员工');
         $permission=$authManager->getPermission('brand/index');
-        $authManager->addChild($role,$permission);
+        $authManager->addChild($role,$permission);*/
         //给用户指派角色
         /*$role=$authManager->getRole('超级管理员');
         $role2=$authManager->getRole('普通员工');
         $authManager->assign($role,8);
         $authManager->assign($role2,9);*/
-        echo '执行成功!';
+        //echo '执行成功!';
     }
 }

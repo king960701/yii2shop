@@ -1,12 +1,10 @@
 <?php
 //使用表单组件配合表单模型创建表单
 $form = \yii\bootstrap\ActiveForm::begin();
-echo $form->field($model,'username')->textInput();
-if($model->getIsNewRecord()){
-    echo $form->field($model,'password_hash')->passwordInput();
-}
-echo $form->field($model,'email')->textInput();
-echo $form->field($model,'role',['inline'=>1])->checkboxList(\backend\models\Admin::getRoles());
+echo $form->field($model,'name')->textInput();
+echo $form->field($model,'parent_id')->dropDownList(\backend\models\Menu::getParent());
+echo $form->field($model,'url')->dropDownList(\backend\models\Menu::getPermissionNames());
+echo $form->field($model,'sort')->textInput(['value'=>1]);
 if($model->getIsNewRecord()){
     echo '<button type="submit" class="btn btn-info">添加</button>';
 }else{
