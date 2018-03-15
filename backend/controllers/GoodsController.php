@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Goods;
 use backend\models\GoodsCategory;
 use backend\models\GoodsDayCount;
@@ -207,5 +208,15 @@ class GoodsController extends \yii\web\Controller
         $content=GoodsIntro::findOne(['goods_id'=>$id]);
         $photo=GoodsGallery::find()->where(['goods_id'=>$id])->asArray()->all();
         return $this->render('see',['content'=>$content,'photo'=>$photo]);
+    }
+    //配置过滤器
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'except'=>['logo-upload'],
+            ]
+        ];
     }
 }

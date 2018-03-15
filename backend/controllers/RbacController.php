@@ -9,6 +9,7 @@
 namespace backend\controllers;
 
 
+use backend\filters\RbacFilter;
 use backend\models\PermissForm;
 use backend\models\PermissionForm;
 use backend\models\RoleForm;
@@ -79,7 +80,7 @@ class RbacController extends  Controller
     public function actionDeletePermission($name){
         $authManager=\Yii::$app->authManager;
         $permission=$authManager->getPermission($name);
-        $result=$authManager->remove($permission);
+            $result=$authManager->remove($permission);
         if(!$result){
             return 'fail';
         }
@@ -159,5 +160,14 @@ class RbacController extends  Controller
             return 'fail';
         }
         return 'success';
+    }
+    //配置过滤器
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
     }
 }

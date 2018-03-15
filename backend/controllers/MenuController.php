@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Menu;
 
 class MenuController extends \yii\web\Controller
@@ -12,7 +13,7 @@ class MenuController extends \yii\web\Controller
      */
     public function actionIndex()
     {
-        $menus=Menu::find()->all();
+        $menus=Menu::find()->where(['parent_id'=>0])->all();
         return $this->render('index',['menus'=>$menus]);
     }
 
@@ -61,5 +62,13 @@ class MenuController extends \yii\web\Controller
         }
         return $this->render('add',['model'=>$model]);
     }
-
+    //配置过滤器
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
+    }
 }

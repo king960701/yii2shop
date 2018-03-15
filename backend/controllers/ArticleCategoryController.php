@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\ArticleCategory;
 
 class ArticleCategoryController extends \yii\web\Controller
@@ -76,5 +77,16 @@ class ArticleCategoryController extends \yii\web\Controller
         }
         //显示回显页面
         return $this->render('add',['model'=>$model]);
+    }
+    //配置过滤器
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //默认情况下对所有操作生效
+                //排除不需要授权的操作
+            ]
+        ];
     }
 }

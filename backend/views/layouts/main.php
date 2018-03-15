@@ -39,7 +39,7 @@ AppAsset::register($this);
     $menuItems[] = [
         'label' => '首页' ,'url' => ['/goods/index']
     ];
-    $menuItems[] = [
+    /*$menuItems[] = [
         'label' => '文章管理' ,'url' => ['/article/index']
     ];
     $menuItems[] = [
@@ -57,11 +57,11 @@ AppAsset::register($this);
     ];
     $menuItems[] = [
         'label' => '菜单管理' ,'url' => ['/menu/index']
-    ];
+    ];*/
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '登录', 'url' => ['/admin/login']];
     } else {
-        //$menuItems=\backend\models\Menu::getAllMenus($menuItems);
+        $menuItems=\backend\models\Menu::getAllMenus($menuItems);
         $menuItems[] = [
             'label' => '用户 ' . Yii::$app->user->identity->username . '',
             'items' => [

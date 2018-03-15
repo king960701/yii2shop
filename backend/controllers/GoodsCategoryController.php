@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\GoodsCategory;
 use backend\models\GoodsCategoryQuery;
 
@@ -91,5 +92,15 @@ class GoodsCategoryController extends \yii\web\Controller
         $nodes=GoodsCategory::find()->select(['id','parent_id','name'])->asArray()->all();
         $nodes[]=['id'=>0,'parent_id'=>0,'name'=>'顶级分类'];
         return $this->render('add',['model'=>$model,'nodes'=>json_encode($nodes)]);
+    }
+    //配置过滤器
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+                //'except'=>['logo-upload'],
+            ]
+        ];
     }
 }

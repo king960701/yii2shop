@@ -41,7 +41,7 @@ class LoginForm extends Model
                 //登录成功保存登录时间 ip
                 $admin->last_login_time=time();
                 $admin->last_login_ip=ip2long(\Yii::$app->request->userIP);
-                $admin->save();
+                $admin->save(0);
                 $duration=$this->rememberMe?3600*24*7:0;
                 //密码正确 保存session
                 return \Yii::$app->user->login($admin,$duration);

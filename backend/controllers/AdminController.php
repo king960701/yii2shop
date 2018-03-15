@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Admin;
 use backend\models\LoginForm;
 use backend\models\PasswordForm;
@@ -77,17 +78,17 @@ class AdminController extends \yii\web\Controller
     }
 
     //配置过滤器
-    /*public function behaviors()
+    public function behaviors()
     {
         return [
             'rbac'=>[
-                'class'=>AccessControl::className(),
+                'class'=>RbacFilter::className(),
                 //默认情况下对所有操作生效
                 //排除不需要授权的操作
                 'except'=>['login','logout','captcha','re-password','index'],
             ]
         ];
-    }*/
+    }
     //注销
     public function actionLogout(){
         \Yii::$app->user->logout();

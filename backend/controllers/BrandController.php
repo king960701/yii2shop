@@ -162,12 +162,14 @@ class BrandController extends \yii\web\Controller
         }
 
     }
+    //配置过滤器
     public function behaviors()
     {
         return [
             'rbac'=>[
-                'class'=>RbacFilter::class,
-                ]
-            ];
+                'class'=>RbacFilter::className(),
+                'except'=>['logo-upload'],
+            ]
+        ];
     }
 }
